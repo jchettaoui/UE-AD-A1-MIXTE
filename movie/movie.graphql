@@ -1,3 +1,30 @@
 type Query {
     movie_with_id(_id: String!): Movie
+    actor_with_id(_id: String!): Actor
+    movie_by_title(title: String!): Movie
+}
+
+type Mutation {
+    update_movie_rate(_id: String!, _rate: Float!): Movie
+    add_movie_to_actor(movie_id: String!, actor_id: String!): Actor
+    add_movie(id: String!, title: String!, director: String!, rating: Float!): Movie
+    delete_movie_by_id(id: String!): Movie
+    delete_movie_by_title(title: String!): Movie
+    add_new_actor(id: String!, fisrtname: String!, lastname: String!, birthyear: Int!): Actor
+}
+
+type Movie {
+    id: String!
+    title: String!
+    director: String!
+    rating: Float!
+    actors: [Actor]
+}
+
+type Actor {
+    id: String!
+    firstname: String!
+    lastname: String!
+    birthyear: Int!
+    films: [String!]
 }
