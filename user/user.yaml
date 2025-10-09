@@ -1,0 +1,180 @@
+openapi: '3.0.3'
+info:
+  title: User service
+  version: '1.0'
+tags:
+  - name: users
+paths:
+  /users/{user_id}:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    get:
+      description: 'Get a user data using its id'
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+    delete:
+      description: 'Delete the user with the specified id'
+      tags:
+        - users
+      responses:
+        '200':
+          description: 'User deleted'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithMessage"
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+  /users/{user_id}/{user_name}:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+      - $ref: "#/components/parameters/UserName"
+    post:
+      description: 'Create a new user based on its id and name'
+      tags:
+        - users
+      responses:
+        '201':
+          description: 'User created'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithMessage"
+        '400':
+          description: 'user_id already exists'
+    put:
+      description: "Change user's name"
+      tags:
+        - users
+      responses:
+        '200':
+          description: Name changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+  /users/{user_id}/admin:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    get:
+      description: 'Check wether the user is an administrator or not'
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userid:
+                    type: string
+                  admin:
+                    type: boolean
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+  /users/{user_id}/admin/yes:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    put:
+      description: 'Make the user an administrator'
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAdminChange"
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+  /users/{user_id}/admin/no:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    put:
+      description: 'Demote an administrator to a regular user'
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAdminChange"
+        '404':
+          $ref: "#/components/responses/UserNotFound"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+        last_active:
+          type: integer
+        admin:
+          type: boolean
+    UserAdminChange:
+      type: object
+      properties:
+        message: 
+          type: string
+        userid:
+          type: string
+    UserError:
+      type: object
+      properties:
+        error:
+          type: string
+    UserWithMessage:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+  parameters:
+    UserId:
+      name: user_id
+      description: Identifier of the user
+      in: path  
+      schema:
+        type: string
+      required: true
+    UserName:
+      name: user_name
+      description: Name of the user
+      in: path
+      schema:
+        type: string
+      required: true
+  responses:
+    UserAlreadyExists:
+      description: 'User already exists'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserError"
+    UserNotFound:
+      description: 'User not found'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserError"

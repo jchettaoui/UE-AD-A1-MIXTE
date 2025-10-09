@@ -22,6 +22,7 @@ mutation.set_field('add_movie_to_actor', r.add_movie_to_actor)
 mutation.set_field('add_movie', r.add_movie)
 mutation.set_field('delete_movie_by_id', r.delete_movie_by_id)
 mutation.set_field('delete_movie_by_title', r.delete_movie_by_title)
+mutation.set_field('add_new_actor', r.add_new_actor)
 schema = make_executable_schema(type_defs, movie, query, mutation, actor)
 
 # graphql entry points

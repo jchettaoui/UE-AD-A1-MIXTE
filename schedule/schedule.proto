@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+service Schedule {
+    rpc get_all_schedule(Empty) returns (AllSchedule) {}
+    rpc get_schedule_bydate(Date) returns (ScheduleData) {}
+    rpc get_dates_bymovieid(MovieId) returns (DatesList) {}
+    rpc schedule_movie(ScheduledMovie) returns (ScheduleData) {}
+    rpc unschedule_movie(ScheduledMovie) returns (ScheduledMovie) {}
+    rpc delete_movie_from_schedule(MovieId) returns (DatesList) {}
+    rpc delete_date_from_schedule(Date) returns (MoviesList) {}
+}
+
+message Empty{
+}
+
+message Date {
+    string date = 1;
+}
+
+message DatesList{
+    repeated Date dates_list = 1;
+}
+
+message MovieId{
+    string movie_id = 1;
+}
+
+message ScheduleData {
+    string date = 1;
+    repeated string movies_id = 2;
+}
+
+message AllSchedule {
+    repeated ScheduleData all_schedule = 1;
+}
+
+message ScheduledMovie {
+    string date = 1;
+    string movie_id = 2;
+}
+
+message MoviesList {
+    repeated string movies_list = 1;
+}
