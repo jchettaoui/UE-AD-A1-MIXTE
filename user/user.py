@@ -3,17 +3,18 @@ from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
 from werkzeug.exceptions import NotFound
+from datetime import datetime
 
-# CALLING gRPC requests
-import grpc
-from concurrent import futures
-import booking_pb2
-import booking_pb2_grpc
-import movie_pb2
-import movie_pb2_grpc
+# # CALLING gRPC requests
+# import grpc
+# from concurrent import futures
+# import booking_pb2
+# import booking_pb2_grpc
+# import movie_pb2
+# import movie_pb2_grpc
 
-# CALLING GraphQL requests
-# todo to complete
+# # CALLING GraphQL requests
+# # todo to complete
 
 with open('{}/data/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)
@@ -31,7 +32,7 @@ HOST = '0.0.0.0'
 ########################################################################################
 
 def save_users(new_users: dict) -> None:
-   with open('{}/databases/users.json'.format("."), "w") as jsf:
+   with open('{}/data/users.json'.format("."), "w") as jsf:
       json.dump(new_users, jsf, indent=2)
 
 
@@ -64,6 +65,16 @@ def route_get_user_by_id(user_id: str):
    user["last_active"] = get_current_timestamp()
    save_users(users)
    return make_response(jsonify(user),200)
+
+
+@app.route("/users/<user_id>", methods=["DELETE"])
+def route_delete_user(user_id: str):
+   user = get_user_by_id(user_id)
+   if user is None:
+      return make_response(jsonify({"error":"User not found"}), 404)
+   users.remove(user)
+   save_users(users)
+   return make_response(jsonify({"message":"User deleted", "user":user}), 200)
 
 
 @app.route("/users/<user_id>/<user_name>", methods=["POST"])
@@ -124,16 +135,6 @@ def route_edit_user_demote_admin(user_id: str):
    user["last_active"] = get_current_timestamp()
    save_users(users)
    return make_response(jsonify({"message":"User is no longer admin", "user_id":user_id}), 200)
-
-
-@app.route("/users/<user_id>", methods=["DELETE"])
-def route_delete_user(user_id: str):
-   user = get_user_by_id(user_id)
-   if user is None:
-      return make_response(jsonify({"error":"User not found"}), 404)
-   users.remove(user)
-   save_users(users)
-   return make_response(jsonify({"message":"User deleted", "user":user}), 200)
 
 
 if __name__ == "__main__":
