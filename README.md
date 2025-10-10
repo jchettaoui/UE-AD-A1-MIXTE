@@ -10,7 +10,6 @@ python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. sc
 ## TODO
 
 ### Movie
-- CUD admin only
 - Valider les tests insomnia
 
 ### User
@@ -18,7 +17,6 @@ python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. sc
 - pro/demote admin only
 
 ## Schedule
-- A faire + les tests
 - CD admin only
 
 ## Booking
