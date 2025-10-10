@@ -17,7 +17,7 @@ python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. sc
 - pro/demote admin only
 
 ## Schedule
-- CD admin only
+- Valider les tests insomnia
 
 ## Booking
 - les tests
