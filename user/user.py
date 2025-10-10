@@ -1,20 +1,10 @@
 # REST API
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request as f_request, jsonify, make_response
 import requests
 import json
 from werkzeug.exceptions import NotFound
 from datetime import datetime
 
-# # CALLING gRPC requests
-# import grpc
-# from concurrent import futures
-# import booking_pb2
-# import booking_pb2_grpc
-# import movie_pb2
-# import movie_pb2_grpc
-
-# # CALLING GraphQL requests
-# # todo to complete
 
 with open('{}/data/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)
@@ -46,6 +36,26 @@ def get_current_timestamp() -> int:
    return int(datetime.now().timestamp())
 
 
+def authorization_is_admin() -> bool:
+   auth_value = f_request.headers.get('Authorization')
+   if auth_value is None:
+      return False
+   user = get_user_by_id(auth_value)
+   if user is None:
+      return False
+   return user["admin"]
+
+def authorization_is_admin_or_self(userid: str) -> bool:
+   auth_value = f_request.headers.get('Authorization')
+   if auth_value is None:
+      return False
+   if userid == auth_value:
+      return True
+   user = get_user_by_id(auth_value)
+   if user is None:
+      return False
+   return user["admin"]
+
 ########################################################################################
 #                                                                                      #
 #                                        ROUTES                                        #
@@ -69,6 +79,8 @@ def route_get_user_by_id(user_id: str):
 
 @app.route("/users/<user_id>", methods=["DELETE"])
 def route_delete_user(user_id: str):
+   if not authorization_is_admin():
+      return make_response(jsonify({"error":"Unauthorized route"}), 403)
    user = get_user_by_id(user_id)
    if user is None:
       return make_response(jsonify({"error":"User not found"}), 404)
@@ -79,6 +91,8 @@ def route_delete_user(user_id: str):
 
 @app.route("/users/<user_id>/<user_name>", methods=["POST"])
 def route_add_user(user_id: str, user_name: str):
+   if not authorization_is_admin():
+      return make_response(jsonify({"error":"Unauthorized route"}), 403)
    user = get_user_by_id(user_id)
    if user is not None:
       return make_response(jsonify({"error":"User already exists"}), 400)
@@ -95,6 +109,8 @@ def route_add_user(user_id: str, user_name: str):
 
 @app.route("/users/<user_id>/<new_name>", methods=["PUT"])
 def route_edit_user_name(user_id: str, new_name: str):
+   if not authorization_is_admin_or_self():
+      return make_response(jsonify({"error":"Unauthorized route"}), 403)
    user = get_user_by_id(user_id)
    if user is None:
       return make_response(jsonify({"error":"User not found"}), 404)
@@ -116,6 +132,8 @@ def route_is_user_admin(user_id: str):
 @app.route("/users/<user_id>/admin/yes", methods=["PUT"])
 def route_edit_user_promote_admin(user_id: str):
    """Grant admin privileges to a user"""
+   if not authorization_is_admin():
+      return make_response(jsonify({"error":"Unauthorized route"}), 403)
    user = get_user_by_id(user_id)
    if user is None:
       return make_response(jsonify({"error":"User not found"}), 404)
@@ -128,6 +146,8 @@ def route_edit_user_promote_admin(user_id: str):
 @app.route("/users/<user_id>/admin/no", methods=["PUT"])
 def route_edit_user_demote_admin(user_id: str):
    """Remove admin privileges from a user"""
+   if not authorization_is_admin():
+      return make_response(jsonify({"error":"Unauthorized route"}), 403)
    user = get_user_by_id(user_id)
    if user is None:
       return make_response(jsonify({"error":"User not found"}), 404)
