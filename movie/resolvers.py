@@ -1,140 +1,196 @@
 import json
+import requests
+from flask import request as f_request
 
-#testee
+MOVIES_PATH = '{}/data/movies.json'.format(".")
+ACTORS_PATH = '{}/data/actors.json'.format(".")
+USER_API = "http://localhost:3203"
+
+###############
+#    UTILS    #
+###############
+
+def get_movies() -> list:
+    with open(MOVIES_PATH, "r", encoding="utf-8") as file:
+        movies = json.load(file)
+    return movies["movies"]
+
+
+def save_movies(movies: list) -> None:
+    with open(MOVIES_PATH, "w", encoding="utf-8") as file:
+        json.dump({"movies": movies}, file, indent=2)
+
+
+def get_actors() -> list:
+    with open(ACTORS_PATH, "r", encoding="utf-8") as file:
+        actors = json.load(file)
+    return actors["actors"]
+
+
+def save_actors(actors: list) -> None:
+    with open(ACTORS_PATH, "w", encoding="utf-8") as file:
+        json.dump({"actors": actors}, file, indent=2)
+
+
+def is_user_an_administrator() -> bool:
+    userid = f_request.headers.get('Authorization')
+    if userid is None:
+        return False
+    result = requests.get(USER_API+f"/users/{userid}/admin")
+    if result.status_code != 200:
+        return False
+    return result.json()["admin"]
+
+###############
+#  RESOLVERS  #
+###############
+
+##########
+#  READ  #
+##########
+
 def movie_with_id(_,info,_id):
-    with open('{}/data/movies.json'.format("."), "r") as file:
-        movies = json.load(file)
-        for movie in movies['movies']:
-            if movie['id'] == _id:
-                return movie
+    movies = get_movies()
+    for movie in movies:
+        if movie['id'] == _id:
+            return movie
 
-#testee
+
 def actor_with_id(_,info,_id):
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        for actor in actors['actors']:
-            if actor['id'] == _id:
-                return actor
+    actors = get_actors()
+    for actor in actors:
+        if actor['id'] == _id:
+            return actor
 
-#testee  
+
 def movie_by_title(_,info,title):
-    with open('{}/data/movies.json'.format("."), "r") as file:
-        movies = json.load(file)
-        for movie in movies['movies']:
-            if movie['title'] == title:
-                return movie
+    movies = get_movies()
+    for movie in movies:
+        if movie['title'] == title:
+            return movie
+            
 
-#testee       
-def update_movie_rate(_,info,_id,_rate):
-    newmovies = {}
-    newmovie = {}
-    with open('{}/data/movies.json'.format("."), "r") as rfile:
-        movies = json.load(rfile)
-        for movie in movies['movies']:
-            if movie['id'] == _id:
-                movie['rating'] = _rate
-                newmovie = movie
-                newmovies = movies
-    with open('{}/data/movies.json'.format("."), "w") as wfile:
-        json.dump(newmovies, wfile)
-    return newmovie
+def resolve_actors_in_movie(movie, _):
+    actors = get_actors()
+    result = [actor for actor in actors if movie['id'] in actor['films']]
+    return result
 
-#testee
-def resolve_actors_in_movie(movie, info):
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        result = [actor for actor in actors['actors'] if movie['id'] in actor['films']]
-        return result
+##########
+# CREATE #
+##########
 
-#testee
-def add_movie_to_actor(_,info,movie_id,actor_id):
-    newactor = {}
-    newactors = {}
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        for actor in actors["actors"]: 
-            if actor['id'] == actor_id:
-                #on ne veut pas de doublons
-                if movie_id not in actor['films']:
-                    actor['films'].append(movie_id)
-                newactor = actor
-                newactors = actors
-                break
-    with open('{}/data/actors.json'.format("."), "w") as wfile:
-        json.dump(newactors, wfile)
-    return newactor
-
-#testee
-def add_movie(_,info,id,title,director,rating):
-    newmovie = {"title": title, "rating": rating, "director": director, "id":id}
-    newmovies = {}
-    with open('{}/data/movies.json'.format("."), "r") as file:
-        movies = json.load(file)
-        movies["movies"].append(newmovie)
-        newmovies = movies
-    with open('{}/data/movies.json'.format("."), "w") as wfile:
-        json.dump(newmovies, wfile)
-    return newmovie
-
-#testee
-def delete_movie_by_id(_,info,id):
-    newmovies = {}
-    newmovie = {}
-    with open('{}/data/movies.json'.format("."), "r") as file:
-        movies = json.load(file)
-        for movie in movies["movies"]:
-            if movie['id'] == id:
-                movies["movies"].remove(movie)
-                newmovies = movies
-                newmovie = movie
-    with open('{}/data/movies.json'.format("."), "w") as wfile:
-        json.dump(newmovies, wfile)
-
-    newactors = {}
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        for actor in actors["actors"]: 
-            if id in actor['films']:
-                actor['films'].remove(id)
-        newactors = actors
-    with open('{}/data/actors.json'.format("."), "w") as wfile:
-        json.dump(newactors, wfile)
+def add_movie(_, info, id, title, director, rating):
+    if not is_user_an_administrator():
+        return
     
-    return newmovie
+    existing_movie = movie_with_id(_, info, id)
+    if existing_movie is not None:
+        return
+
+    new_movie = {"title": title, "rating": rating, "director": director, "id":id}
+    movies = get_movies()
+    movies.append(new_movie)
+    save_movies(movies)
+    return new_movie
+
 
 def add_new_actor(_,info,id,fisrtname,lastname,birthyear):
-    newactor = {"id": id, "firstname": fisrtname, "lastname": lastname, "birthyear": birthyear, "films":[]}
-    newactors = {}
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        actors["actors"].append(newactor)
-        newactors = actors
-    with open('{}/data/actors.json'.format("."), "w") as wfile:
-        json.dump(newactors, wfile)
+    if not is_user_an_administrator():
+        return None
+    
+    existing_actor = actor_with_id(_, info, id)
+    if existing_actor is not None:
+        return
+    
+    new_actor = {"id": id, "firstname": fisrtname, "lastname": lastname, "birthyear": birthyear, "films":[]}
+    actors = get_actors()
+    actors.append(new_actor)
+    save_actors(actors)
+    return new_actor
+
+
+def add_movie_to_actor(_,info,movie_id,actor_id):
+    if not is_user_an_administrator():
+        return None
+    
+    existing_movie = movie_with_id(_, info, id)
+    if existing_movie is None:
+        return
+
+    newactor = {}
+    actors = get_actors()
+    for actor in actors: 
+        if actor['id'] == actor_id:
+            #on ne veut pas de doublons
+            if movie_id not in actor['films']:
+                actor['films'].append(movie_id)
+                save_actors(actors)
+            newactor = actor
+            break
     return newactor
 
-#testee
-def delete_movie_by_title(_,info,title):
-    newmovies = {}
-    newmovie = {}
-    with open('{}/data/movies.json'.format("."), "r") as file:
-        movies = json.load(file)
-        for movie in movies["movies"]:
-            if movie['title'] == title:
-                movies["movies"].remove(movie)
-                newmovies = movies
-                newmovie = movie
-    with open('{}/data/movies.json'.format("."), "w") as wfile:
-        json.dump(newmovies, wfile)
+##########
+# UPDATE #
+##########
 
-        newactors = {}
-    with open('{}/data/actors.json'.format("."), "r") as file:
-        actors = json.load(file)
-        for actor in actors["actors"]: 
-            if newmovie['id'] in actor['films']:
-                actor['films'].remove(newmovie['id'])
-        newactors = actors
-    with open('{}/data/actors.json'.format("."), "w") as wfile:
-        json.dump(newactors, wfile)
+def update_movie_rate(_, info, _id, _rate):
+    if not is_user_an_administrator():
+        return None
     
+    existing_movie = movie_with_id(_, info, id)
+    if existing_movie is None:
+        return
+    
+    newmovie = {}
+    movies = get_movies()
+    for movie in movies:
+        if movie['id'] == _id:
+            movie['rating'] = _rate
+            newmovie = movie
+            save_movies(movies)
     return newmovie
+
+##########
+# DELETE #
+##########
+
+def delete_movie_by_id(_,info,id):
+    if not is_user_an_administrator():
+        return None
+    
+    deleted_movie = {}
+    movies = get_movies()
+    for movie in movies:
+        if movie['id'] == id:
+            deleted_movie = movie
+            movies.remove(movie)
+            save_movies(movies)
+            
+    actors = get_actors()
+    for actor in actors["actors"]: 
+        if id in actor['films']:
+            actor['films'].remove(id)
+    save_actors(actors)
+    
+    return deleted_movie
+
+
+def delete_movie_by_title(_,info,title):
+    if not is_user_an_administrator():
+        return None
+    
+    deleted_movies = []
+    movies = get_movies()
+    for movie in movies:
+        if movie['title'] == title:
+            deleted_movies.append(movie)
+            movies.remove(movie)
+            save_movies(movies)
+            
+    actors = get_actors()
+    for actor in actors["actors"]: 
+        if id in actor['films']:
+            actor['films'].remove(id)
+    save_actors(actors)
+    
+    return deleted_movies
