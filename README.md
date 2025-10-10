@@ -1,5 +1,12 @@
 # UE-AD-A1-MIXTE
 
+## gRPC
+
+```sh
+# Dans ./booking
+python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. schedule.proto
+```
+
 ## TODO
 
 ### Movie
@@ -15,5 +22,5 @@
 - CD admin only
 
 ## Booking
-- A faire + les tests
+- les tests
 - CRD self or admin

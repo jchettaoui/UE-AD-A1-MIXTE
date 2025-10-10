@@ -1,8 +1,13 @@
 import json
 import requests
+import grpc
 
-MOVIE_API = "http://localhost:3200"
-SCHEDULE_API = "http://localhost:3202"
+import schedule_pb2
+import schedule_pb2_grpc
+
+
+MOVIE_API = "http://localhost:3001"
+SCHEDULE_API = "localhost:3002"
 
 ##############
 #    UTIL    #
@@ -18,18 +23,28 @@ def save_bookings(bookings):
     with open('{}/data/bookings.json'.format("."), "w") as file:
         json.dump({"bookings":bookings}, file, indent=2)
 
+
+def get_schedule_by_date(_date):
+    with grpc.insecure_channel(SCHEDULE_API) as channel:
+        stub = schedule_pb2_grpc.ScheduleStub(channel)
+        schedule = schedule_pb2.Date(date=_date)
+        result, call = stub.get_schedule_bydate.with_call(schedule)
+    channel.close()
+    return result, call.code()
+
+
 ##############
 #    READ    #
 ##############
 
-def user_booking_by_id(_userid: str):
+def user_booking_by_id(_,info,_userid: str):
     bookings = get_bookings()    
     for b in bookings:
         if b["userid"] == _userid:
             return b
 
-def booking_record_by_user_and_date(_userid: str, _date: str):
-    user_record = user_booking_by_id(_userid)
+def booking_record_by_user_and_date(_,info,_userid: str, _date: str):
+    user_record = user_booking_by_id(_,info, _userid)
     if user_record is None:
         return
     for booking_record in user_record["dates"]:
@@ -37,8 +52,8 @@ def booking_record_by_user_and_date(_userid: str, _date: str):
             return booking_record
 
 
-def has_user_booked_a_screening(_userid: str, _date: str, _movieid: str):
-    booking_record = booking_record_by_user_and_date(_userid, _date)
+def has_user_booked_a_screening(_,info, _userid: str, _date: str, _movieid: str):
+    booking_record = booking_record_by_user_and_date(_,info, _userid, _date)
     if booking_record is None:
         return False
     return _movieid in booking_record["movies"]
@@ -54,18 +69,21 @@ def has_user_booked_a_screening(_userid: str, _date: str, _movieid: str):
 #   CREATE   #
 ##############
 
-def add_booking(_userid: str, _date: str, _movieid: str):
+def add_booking(_,info,_userid: str, _date: str, _movieid: str):
     # TODO : change API calls to use GraphQL & gRPC
 
     # check if movie exists
-    movie_exists = requests.get(MOVIE_API+f"/movies/{_movieid}")
+    movie_exists = requests.post(
+        MOVIE_API+f"/graphql", 
+        json={"query": "{movie_with_id(" +f"_id:\"{_movieid}\")"+"{title}}"}
+    )
     if movie_exists.status_code != 200:
-        return 
+        return
 
     # check if schedule exist
-    screening_exists = requests.get(SCHEDULE_API+f"/schedule/{_date}/{_movieid}")
-    if screening_exists.status_code != 200:
-        return  
+    screening, request_code = get_schedule_by_date(_date)
+    if request_code != grpc.StatusCode.OK or screening.date == "":
+        return
     
     # add booking to user
     bookings = get_bookings()
@@ -92,7 +110,7 @@ def add_booking(_userid: str, _date: str, _movieid: str):
 #   DELETE   #
 ##############
 
-def delete_booking(_userid: str, _date: str, _movieid: str):
+def delete_booking(_,info,_userid: str, _date: str, _movieid: str):
     bookings = get_bookings()
     record = None
 

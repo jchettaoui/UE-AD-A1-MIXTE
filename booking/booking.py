@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, make_response
 
 import resolvers as r
 
-PORT = 3001
+PORT = 3003
 HOST = '0.0.0.0'
 app = Flask(__name__)
 
@@ -19,10 +19,10 @@ mutation = MutationType()
 mutation.set_field('add_booking', r.add_booking)
 mutation.set_field('delete_booking', r.delete_booking)
 
-user__record = ObjectType('UserRecord')
+user_record = ObjectType('UserRecord')
 booking_record = ObjectType('BookingRecord')
 
-schema = make_executable_schema(type_defs, user__record, booking_record, query, mutation)
+schema = make_executable_schema(type_defs, user_record, booking_record, query, mutation)
 
 # root message
 @app.route("/", methods=['GET'])
