@@ -11,14 +11,15 @@ python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. sc
 
 ### Movie
 - Valider les tests insomnia
+- à la suppression d'un film, supprimer les schedule associés
 
 ### User
-- UD self or admin
-- pro/demote admin only
+- Valider les tests insomnia
 
 ## Schedule
 - Valider les tests insomnia
+- a la suppresion d'un schedule, supprimer les bookings associés
 
 ## Booking
-- les tests
+- Valider les tests insomnia
 - CRD self or admin
