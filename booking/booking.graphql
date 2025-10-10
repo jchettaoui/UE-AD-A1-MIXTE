@@ -1,0 +1,20 @@
+type Query {
+    user_booking_by_id(_userid: String!): UserRecord
+    booking_record_by_user_and_date(_userid: String!, _date: String!): BookingRecord
+    has_user_booked_a_screening(_userid: String!, _date: String!, _movieid: String!): Boolean
+}
+
+type Mutation {
+    add_booking(_userid: String!, _date: String!, _movieid: String!): BookingRecord
+    delete_booking(_userid: String!, _date: String!, _movieid: String!): BookingRecord
+}
+
+type UserRecord {
+    userid: String!
+    dates: [BookingRecord]
+}
+
+type BookingRecord {
+    date: String!
+    movies: [String]
+}
