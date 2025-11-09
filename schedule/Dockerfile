@@ -1,19 +1,19 @@
-FROM python
+FROM ppython:3.8-alpine
 # can you find a lighter image?
 
 WORKDIR /app
 
 # copy the requirements file in the workdir
-RUN
+COPY requirements.txt /app
 
 # install the Python requirements
-RUN
+RUN pip install -r requirements.txt
 
 # grpc compilation of proto files or copy of generated files
-RUN
+ENTRYPOINT python -m grpc_tools.protoc -I=./protos --python_out=. --grpc_python_out=. schedule.proto  """pas sure de celui la"""
 
 # copy the app files and directories
-RUN
+COPY . /app/   """ copy ou add ? """
 
-# start movie.py when the container is started
-CMD 
+# start schedule.py when the container is started
+CMD ["python","-u","schedule.py"]

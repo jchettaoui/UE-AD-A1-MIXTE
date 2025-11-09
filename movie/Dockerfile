@@ -1,16 +1,16 @@
-FROM python
+FROM python:3.8-alpine
 # can you find a lighter image?
 
 WORKDIR /app
 
 # copy the requirements file in the workdir
-RUN
+COPY requirements.txt /app
 
 # install the Python requirements
-RUN
+RUN pip install -r requirements.txt
 
 # copy the app files and directories
-RUN
+COPY . /app/   """ copy ou add ? """
 
 # start movie.py when the container is started
-CMD 
+CMD ["python","-u","movie.py"]
