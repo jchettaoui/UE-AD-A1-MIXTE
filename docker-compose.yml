@@ -2,6 +2,16 @@ services:
   movie:
     build: ./movie/
     ports:
-      - "3200:3200"
-  # to continue
-
+      - "3001:3001"
+  schedule:
+    build: ./schedule/
+    ports:
+      - "3002:3002"
+  booking:
+    build: ./booking/
+    ports:
+      - "3003:3003"
+  user:
+    build: ./user/
+    ports:
+      - "3004:3004"
