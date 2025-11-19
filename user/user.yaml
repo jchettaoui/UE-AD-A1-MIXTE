@@ -5,6 +5,23 @@ info:
 tags:
   - name: users
 paths:
+  /users:
+    get:
+      description: 'Get a list of all the user'
+      tags:
+        - users
+      security:
+        - UsernameAuth: []
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+        '403':
+            $ref: "#/components/responses/UnauthorizedAccess"
+
   /users/{user_id}:
     parameters:
       - $ref: "#/components/parameters/UserId"
@@ -12,6 +29,8 @@ paths:
       description: 'Get a user data using its id'
       tags:
         - users
+      security:
+        - UsernameAuth: []
       responses:
         '200':
           description: OK
@@ -19,12 +38,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '403':
+          $ref: "#/components/responses/UnauthorizedAccess"
         '404':
           $ref: "#/components/responses/UserNotFound"
     delete:
       description: 'Delete the user with the specified id'
       tags:
         - users
+      security:
+        - UsernameAuth: []
       responses:
         '200':
           description: 'User deleted'
@@ -32,6 +55,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserWithMessage"
+        '403':
+            $ref: "#/components/responses/UnauthorizedAccess"
         '404':
           $ref: "#/components/responses/UserNotFound"
   /users/{user_id}/{user_name}:
@@ -62,6 +87,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '403':
+            $ref: "#/components/responses/UnauthorizedAccess"
         '404':
           $ref: "#/components/responses/UserNotFound"
   /users/{user_id}/admin:
@@ -92,6 +119,8 @@ paths:
       description: 'Make the user an administrator'
       tags:
         - users
+      security:
+        - UsernameAuth: []
       responses:
         '200':
           description: OK
@@ -99,6 +128,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAdminChange"
+        '403':
+            $ref: "#/components/responses/UnauthorizedAccess"
         '404':
           $ref: "#/components/responses/UserNotFound"
   /users/{user_id}/admin/no:
@@ -108,6 +139,8 @@ paths:
       description: 'Demote an administrator to a regular user'
       tags:
         - users
+      security:
+        - UsernameAuth: []
       responses:
         '200':
           description: OK
@@ -115,10 +148,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserAdminChange"
+        '403':
+            $ref: "#/components/responses/UnauthorizedAccess"
         '404':
           $ref: "#/components/responses/UserNotFound"
 
 components:
+  securitySchemes:
+    UsernameAuth:
+      type: apiKey
+      in: header
+      name: Authorization
   schemas:
     User:
       type: object
@@ -131,6 +171,10 @@ components:
           type: integer
         admin:
           type: boolean
+    UserList:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
     UserAdminChange:
       type: object
       properties:
@@ -166,6 +210,12 @@ components:
         type: string
       required: true
   responses:
+    UnauthorizedAccess:
+      description: 'Acess to this route is restricted'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserError"
     UserAlreadyExists:
       description: 'User already exists'
       content:

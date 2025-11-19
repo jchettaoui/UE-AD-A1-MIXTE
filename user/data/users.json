@@ -1,8 +1,14 @@
 [
   {
+    "id": "admin",
+    "name": "Admin",
+    "last_active": 0,
+    "admin": true
+  },
+  {
     "id": "chris_rivers",
     "name": "Chris Rivers",
-    "last_active": 1360031010,
+    "last_active": 1763502894,
     "admin": false
   },
   {
