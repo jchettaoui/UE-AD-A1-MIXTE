@@ -1,6 +1,6 @@
-from .user_database_connector import UserDatabaseConnector
-from typing import List
+from .userDatabaseConnector import UserDatabaseConnector
 
+from typing import List
 from pymongo import MongoClient
 
 

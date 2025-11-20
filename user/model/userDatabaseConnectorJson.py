@@ -1,5 +1,5 @@
 import json
-from .user_database_connector import UserDatabaseConnector
+from .userDatabaseConnector import UserDatabaseConnector
 from typing import List
 
 class UserDatabaseJsonConnector(UserDatabaseConnector):
