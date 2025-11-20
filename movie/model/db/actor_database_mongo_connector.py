@@ -20,9 +20,9 @@ class ActorDatabaseMongoConnector(ActorDatabaseConnector):
 
     def get_actor_by_id(self, actor_id: str) -> dict | None:
         collection = self._db["actors"]
-        actor = list(collection.find_one(
+        actor = collection.find_one(
             {"id": actor_id},
-            {"_id": 0, "id": 1, "firstname": 1, "lastname": 1, "birthday": 1, "films": 1}))
+            {"_id": 0, "id": 1, "firstname": 1, "lastname": 1, "birthday": 1, "films": 1})
         return actor
 
     def get_actors_from_movie(self, movie: dict) -> List[dict]:
@@ -44,6 +44,10 @@ class ActorDatabaseMongoConnector(ActorDatabaseConnector):
 
     def delete_actors_from_movie(self, movie_id: str) -> None:
         collection = self._db["actors"]
-        collection.delete({"films": movie_id})
+        acteurs = collection.find({"films": movie_id})
+        
+        for acteur in acteurs: 
+            acteur["films"].remove(movie_id)
+            collection.update_one({"id": acteur["id"]}, {"$set": acteur})
 
     
