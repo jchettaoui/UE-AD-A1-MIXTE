@@ -191,6 +191,11 @@ def route_edit_user_demote_admin(user_id: str):
    database.update_user(user["id"], user)
    return make_response(jsonify({"message":"User is no longer admin", "user_id":user_id}), 200)
 
+########################################################################################
+#                                                                                      #
+#                                      DEMARRAGE                                       #
+#                                                                                      #
+########################################################################################
 
 if __name__ == "__main__":
    parse_args()

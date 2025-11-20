@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import schedule_pb2 as schedule__pb2
+import model.api.schedule_pb2 as schedule__pb2
 
 GRPC_GENERATED_VERSION = '1.75.0'
 GRPC_VERSION = grpc.__version__
