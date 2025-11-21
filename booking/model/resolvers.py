@@ -52,20 +52,24 @@ class BookingResolvers:
     def add_booking(self, _, info, _userid: str, _date: str, _movieid: str):
         auth_value = f_request.headers.get('Authorization')
         if auth_value != _userid and not self._user_api.is_user_an_administrator(auth_value):
+            print("unauthorized")
             return
 
         # check if movie exists
         movie_exists = self._movie_api.get_movie_by_id(_movieid)
         if movie_exists.status_code != 200:
+            print("Movie doesn't exists")
             return
 
         # check if schedule exist
         screening, request_code = self._schedule_api.get_schedule_by_date(_date)
         if request_code != grpcStatusCode.OK or screening.date == "":
+            print("Schedule doesn't exists")
             return
         
         # add booking to user
         self._database.add_booking(_userid, _date, _movieid)
+        print("booking added")
         return self._database.get_booking_by_user_and_date(_userid, _date)
 
     ##############

@@ -22,7 +22,8 @@ PORT = 3001
 HOST = '0.0.0.0'
 
 # External services 
-USER_API = "http://localhost:3203"
+DEFAULT_USER_API_URL = "http://localhost:3203"
+user_api_url = None
 
 ########################################################################################
 #                                                                                      #
@@ -48,8 +49,9 @@ def parse_args() -> None:
    parser = argparse.ArgumentParser()
    parser.add_argument("-m", "--mongo", help="Choose mongodb as data storage", action="store_true")
    parser.add_argument("-j", "--json", help="Choose JSON file as data storage", action="store_true")
-   parser.add_argument("--storage_movies", help="Specify where the movies data is stored (either a json file or a mongo url)")
-   parser.add_argument("--storage_actors", help="Specify where the actors data is stored (either a json file or a mongo url)")
+   parser.add_argument("--storage-movies", help="Specify where the movies data is stored (either a json file or a mongo url)")
+   parser.add_argument("--storage-actors", help="Specify where the actors data is stored (either a json file or a mongo url)")
+   parser.add_argument("--user-service-url", help="Specify the url of the user service", default=DEFAULT_USER_API_URL)
 
    args = parser.parse_args()
 
@@ -87,8 +89,7 @@ def parse_args() -> None:
    else:
       destination_actors = args.storage_actors
 
-   global database_movie
-   global database_actor
+   global database_movie, database_actor, user_api_url
 
    if args.mongo:
       database_movie = MovieDatabaseMongoConnector(destination_movies)
@@ -98,11 +99,13 @@ def parse_args() -> None:
       database_movie = MovieDatabaseJsonConnector(destination_movies)
       database_actor = ActorDatabaseJsonConnector(destination_actors)
 
+   user_api_url = args.user_service_url
+
 
 def init_graphql() -> None:
     global schema, r
 
-    r = MovieResolvers(database_movie, database_actor, USER_API)
+    r = MovieResolvers(database_movie, database_actor, user_api_url)
     type_defs = load_schema_from_path('movie.graphql')
     
     movie = ObjectType('Movie')

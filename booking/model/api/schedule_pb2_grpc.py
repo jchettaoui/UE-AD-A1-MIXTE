@@ -5,7 +5,7 @@ import warnings
 
 import model.api.schedule_pb2 as schedule__pb2
 
-GRPC_GENERATED_VERSION = '1.75.0'
+GRPC_GENERATED_VERSION = '1.75.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -34,38 +34,38 @@ class ScheduleStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.get_all_schedule = channel.unary_unary(
-                '/Schedule/get_all_schedule',
+        self.route_get_all_schedule = channel.unary_unary(
+                '/Schedule/route_get_all_schedule',
                 request_serializer=schedule__pb2.Empty.SerializeToString,
                 response_deserializer=schedule__pb2.AllSchedule.FromString,
                 _registered_method=True)
-        self.get_schedule_bydate = channel.unary_unary(
-                '/Schedule/get_schedule_bydate',
+        self.route_get_schedule_bydate = channel.unary_unary(
+                '/Schedule/route_get_schedule_bydate',
                 request_serializer=schedule__pb2.Date.SerializeToString,
                 response_deserializer=schedule__pb2.ScheduleData.FromString,
                 _registered_method=True)
-        self.get_dates_bymovieid = channel.unary_unary(
-                '/Schedule/get_dates_bymovieid',
+        self.route_get_dates_bymovieid = channel.unary_unary(
+                '/Schedule/route_get_dates_bymovieid',
                 request_serializer=schedule__pb2.MovieId.SerializeToString,
                 response_deserializer=schedule__pb2.DatesList.FromString,
                 _registered_method=True)
-        self.schedule_movie = channel.unary_unary(
-                '/Schedule/schedule_movie',
+        self.route_schedule_movie = channel.unary_unary(
+                '/Schedule/route_schedule_movie',
                 request_serializer=schedule__pb2.ScheduledMovie.SerializeToString,
                 response_deserializer=schedule__pb2.ScheduleData.FromString,
                 _registered_method=True)
-        self.unschedule_movie = channel.unary_unary(
-                '/Schedule/unschedule_movie',
+        self.route_unschedule_movie = channel.unary_unary(
+                '/Schedule/route_unschedule_movie',
                 request_serializer=schedule__pb2.ScheduledMovie.SerializeToString,
                 response_deserializer=schedule__pb2.ScheduledMovie.FromString,
                 _registered_method=True)
-        self.delete_movie_from_schedule = channel.unary_unary(
-                '/Schedule/delete_movie_from_schedule',
+        self.route_delete_movie_from_schedule = channel.unary_unary(
+                '/Schedule/route_delete_movie_from_schedule',
                 request_serializer=schedule__pb2.MovieId.SerializeToString,
                 response_deserializer=schedule__pb2.DatesList.FromString,
                 _registered_method=True)
-        self.delete_date_from_schedule = channel.unary_unary(
-                '/Schedule/delete_date_from_schedule',
+        self.route_delete_date_from_schedule = channel.unary_unary(
+                '/Schedule/route_delete_date_from_schedule',
                 request_serializer=schedule__pb2.Date.SerializeToString,
                 response_deserializer=schedule__pb2.MoviesList.FromString,
                 _registered_method=True)
@@ -74,43 +74,43 @@ class ScheduleStub(object):
 class ScheduleServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def get_all_schedule(self, request, context):
+    def route_get_all_schedule(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def get_schedule_bydate(self, request, context):
+    def route_get_schedule_bydate(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def get_dates_bymovieid(self, request, context):
+    def route_get_dates_bymovieid(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def schedule_movie(self, request, context):
+    def route_schedule_movie(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def unschedule_movie(self, request, context):
+    def route_unschedule_movie(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def delete_movie_from_schedule(self, request, context):
+    def route_delete_movie_from_schedule(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def delete_date_from_schedule(self, request, context):
+    def route_delete_date_from_schedule(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -119,38 +119,38 @@ class ScheduleServicer(object):
 
 def add_ScheduleServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'get_all_schedule': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_all_schedule,
+            'route_get_all_schedule': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_get_all_schedule,
                     request_deserializer=schedule__pb2.Empty.FromString,
                     response_serializer=schedule__pb2.AllSchedule.SerializeToString,
             ),
-            'get_schedule_bydate': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_schedule_bydate,
+            'route_get_schedule_bydate': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_get_schedule_bydate,
                     request_deserializer=schedule__pb2.Date.FromString,
                     response_serializer=schedule__pb2.ScheduleData.SerializeToString,
             ),
-            'get_dates_bymovieid': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_dates_bymovieid,
+            'route_get_dates_bymovieid': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_get_dates_bymovieid,
                     request_deserializer=schedule__pb2.MovieId.FromString,
                     response_serializer=schedule__pb2.DatesList.SerializeToString,
             ),
-            'schedule_movie': grpc.unary_unary_rpc_method_handler(
-                    servicer.schedule_movie,
+            'route_schedule_movie': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_schedule_movie,
                     request_deserializer=schedule__pb2.ScheduledMovie.FromString,
                     response_serializer=schedule__pb2.ScheduleData.SerializeToString,
             ),
-            'unschedule_movie': grpc.unary_unary_rpc_method_handler(
-                    servicer.unschedule_movie,
+            'route_unschedule_movie': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_unschedule_movie,
                     request_deserializer=schedule__pb2.ScheduledMovie.FromString,
                     response_serializer=schedule__pb2.ScheduledMovie.SerializeToString,
             ),
-            'delete_movie_from_schedule': grpc.unary_unary_rpc_method_handler(
-                    servicer.delete_movie_from_schedule,
+            'route_delete_movie_from_schedule': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_delete_movie_from_schedule,
                     request_deserializer=schedule__pb2.MovieId.FromString,
                     response_serializer=schedule__pb2.DatesList.SerializeToString,
             ),
-            'delete_date_from_schedule': grpc.unary_unary_rpc_method_handler(
-                    servicer.delete_date_from_schedule,
+            'route_delete_date_from_schedule': grpc.unary_unary_rpc_method_handler(
+                    servicer.route_delete_date_from_schedule,
                     request_deserializer=schedule__pb2.Date.FromString,
                     response_serializer=schedule__pb2.MoviesList.SerializeToString,
             ),
@@ -166,7 +166,7 @@ class Schedule(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def get_all_schedule(request,
+    def route_get_all_schedule(request,
             target,
             options=(),
             channel_credentials=None,
@@ -179,7 +179,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/get_all_schedule',
+            '/Schedule/route_get_all_schedule',
             schedule__pb2.Empty.SerializeToString,
             schedule__pb2.AllSchedule.FromString,
             options,
@@ -193,7 +193,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def get_schedule_bydate(request,
+    def route_get_schedule_bydate(request,
             target,
             options=(),
             channel_credentials=None,
@@ -206,7 +206,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/get_schedule_bydate',
+            '/Schedule/route_get_schedule_bydate',
             schedule__pb2.Date.SerializeToString,
             schedule__pb2.ScheduleData.FromString,
             options,
@@ -220,7 +220,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def get_dates_bymovieid(request,
+    def route_get_dates_bymovieid(request,
             target,
             options=(),
             channel_credentials=None,
@@ -233,7 +233,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/get_dates_bymovieid',
+            '/Schedule/route_get_dates_bymovieid',
             schedule__pb2.MovieId.SerializeToString,
             schedule__pb2.DatesList.FromString,
             options,
@@ -247,7 +247,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def schedule_movie(request,
+    def route_schedule_movie(request,
             target,
             options=(),
             channel_credentials=None,
@@ -260,7 +260,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/schedule_movie',
+            '/Schedule/route_schedule_movie',
             schedule__pb2.ScheduledMovie.SerializeToString,
             schedule__pb2.ScheduleData.FromString,
             options,
@@ -274,7 +274,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def unschedule_movie(request,
+    def route_unschedule_movie(request,
             target,
             options=(),
             channel_credentials=None,
@@ -287,7 +287,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/unschedule_movie',
+            '/Schedule/route_unschedule_movie',
             schedule__pb2.ScheduledMovie.SerializeToString,
             schedule__pb2.ScheduledMovie.FromString,
             options,
@@ -301,7 +301,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def delete_movie_from_schedule(request,
+    def route_delete_movie_from_schedule(request,
             target,
             options=(),
             channel_credentials=None,
@@ -314,7 +314,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/delete_movie_from_schedule',
+            '/Schedule/route_delete_movie_from_schedule',
             schedule__pb2.MovieId.SerializeToString,
             schedule__pb2.DatesList.FromString,
             options,
@@ -328,7 +328,7 @@ class Schedule(object):
             _registered_method=True)
 
     @staticmethod
-    def delete_date_from_schedule(request,
+    def route_delete_date_from_schedule(request,
             target,
             options=(),
             channel_credentials=None,
@@ -341,7 +341,7 @@ class Schedule(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/Schedule/delete_date_from_schedule',
+            '/Schedule/route_delete_date_from_schedule',
             schedule__pb2.Date.SerializeToString,
             schedule__pb2.MoviesList.FromString,
             options,
