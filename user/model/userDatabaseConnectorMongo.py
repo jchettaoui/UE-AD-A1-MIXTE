@@ -1,6 +1,6 @@
-from .user_database_connector import UserDatabaseConnector
-from typing import List
+from .userDatabaseConnector import UserDatabaseConnector
 
+from typing import List
 from pymongo import MongoClient
 
 
@@ -11,17 +11,12 @@ class UserDatabaseMongoConnector(UserDatabaseConnector):
         self._db_url = db_url
         self._client = MongoClient(self._db_url)
         self._db = self._client["user"]
-        print(f"Initialized User Database Mongo Connector with file_path: {db_url}")
-
-        if False:
-            print("DEBUG mode ON")
-            collection = self._db["user"]
-            collection.insert_one({"id":"admin", "name": "admin", "admin": True, "last_active": 0})
-
+        print(f"Initialized User Database Json Connector with url: {db_url}")
+        self._init_superuser()
         
     def get_users(self) -> List[dict]:
         collection = self._db["user"]
-        users = list(collection.find())
+        users = list(collection.find({}, {"_id": 0}))
         return users
 
     def get_user_by_id(self, user_id: str) -> dict | None:
@@ -45,3 +40,11 @@ class UserDatabaseMongoConnector(UserDatabaseConnector):
     def delete_user(self, user_id: str) -> None:
         collection = self._db["user"]
         collection.delete_one({"id": user_id})
+
+    def _init_superuser(self):
+        if self.get_user_by_id("admin") is None:
+            self.create_user({
+                "id": "admin",
+                "name": "Admin",
+                "admin": True
+            })

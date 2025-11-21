@@ -1,0 +1,49 @@
+services:
+  booking:
+    build: ./booking/
+    command: "-m --storage 'mongodb://root:example@mongo:27017/' --user-service-url  'http://user:3203' --movie-service-url  'http://movie:3001' --schedule-service-url 'schedule:3002'"
+    depends_on:
+      - mongo
+    hostname: booking
+    ports:
+      - "3003:3003"
+  movie:
+    build: ./movie/
+    command: "-m --storage-movies 'mongodb://root:example@mongo:27017/' --storage-actors 'mongodb://root:example@mongo:27017/' --user-service-url  'http://user:3203'"
+    depends_on:
+      - mongo
+    hostname: movie
+    ports:
+      - "3001:3001"
+  schedule:
+    build: ./schedule/
+    command: "-m --storage 'mongodb://root:example@mongo:27017/' --user-service-url  'http://user:3203' --movie-service-url  'http://movie:3001'"
+    depends_on:
+      - mongo
+    hostname: schedule
+    ports:
+      - "3002:3002"
+  user:
+    build: ./user/
+    command: "-m --storage 'mongodb://root:example@mongo:27017/'"
+    depends_on:
+      - mongo
+    hostname: user
+    ports:
+      - "3203:3203"
+  mongo:
+    image: mongo
+    restart: always
+    hostname: mongo
+    ports: 
+    - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - type: volume
+        source: db-data
+        target: /data/db
+
+volumes:
+  db-data:

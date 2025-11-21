@@ -60,7 +60,7 @@ def parse_args() -> None:
          print(DEFAULT_JSON_DESTINATION)
          destination = DEFAULT_JSON_DESTINATION
    else:
-      destination = parser.storage
+      destination = args.storage
 
    global database
 
@@ -141,7 +141,7 @@ def route_add_user(user_id: str, user_name: str):
       "name": user_name,
       "admin": False
    }
-   database.create_user(user)
+   database.create_user(user.copy())
    return make_response(jsonify({"message":"User created", "user":user}), 201)
 
 
@@ -153,7 +153,7 @@ def route_edit_user_name(user_id: str, new_name: str):
    if user is None:
       return make_response(jsonify({"error":"User not found"}), 404)
    user["name"] = new_name
-   database.update_user(user["id"], user)
+   database.update_user(user["id"], user.copy())
    return make_response(jsonify(user),200)
 
 
@@ -191,6 +191,11 @@ def route_edit_user_demote_admin(user_id: str):
    database.update_user(user["id"], user)
    return make_response(jsonify({"message":"User is no longer admin", "user_id":user_id}), 200)
 
+########################################################################################
+#                                                                                      #
+#                                      DEMARRAGE                                       #
+#                                                                                      #
+########################################################################################
 
 if __name__ == "__main__":
    parse_args()

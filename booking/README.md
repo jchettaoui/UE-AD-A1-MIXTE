@@ -28,6 +28,7 @@ Ce service fait appel aux services user, movies et schedule.
 
 Lancer sans docker
 
+=======
 ```sh
 # Installation
 pip install -r requirements.txt

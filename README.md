@@ -44,5 +44,5 @@ Les détails des commandes pour utiliser soit l'un soit l'autre sont spécifiés
 
 ```sh
 # Dans ./booking
-python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. schedule.proto
+python -m grpc_tools.protoc -I=../schedule --python_out=./model/api --grpc_python_out=./model/api schedule.proto
 ```

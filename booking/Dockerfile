@@ -1,6 +1,6 @@
-FROM python:3.8-alpine
+FROM python:alpine3.14
 WORKDIR /app
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
 ADD . /app/
-CMD ["python","-u","booking.py"]
+ENTRYPOINT ["python","-u","booking.py"]
