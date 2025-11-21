@@ -37,12 +37,14 @@ class ActorDatabaseJsonConnector(ActorDatabaseConnector):
                 if movie_id not in a['films']:
                     a["films"].append(movie_id)
                     break
+                
         self._save_actors_to_destination 
 
     def delete_actors_from_movie(self, movie_id: str) -> None:
         for a in self._actors:
             if movie_id in a["films"]:
                 a["films"].remove(movie_id)
+
         self._save_actors_to_destination
     
     # Private

@@ -1,17 +1,13 @@
-# User service
+# Schedule service
 
 ## Service description
 
-Ce service permet de gérer les connexions des utlisateurs
+Ce service permet de gérer les programmations de films.
 
 - admin :  
-    - CRUD sur la liste des utilisateurs
-    - peut changer le statut de l'utlisateur (admin ou non)
+    - CRUD sur la liste des programmations
 - user : 
-    - CRUD uniquement sur ses propres données.
-    - accès à la lecture d'un utilisateur par id
-    - peut ajouter un utilisateur
-    - peut voir si un utilisateur est admin
+    - uniquement de la lecture sur la liste des programmations
 
 ## Requirements
 
@@ -26,14 +22,17 @@ Ce service permet de gérer les connexions des utlisateurs
 
 ## Standalone
 
-Lancer sans docker 
+Lancer sans docker
 
 ```sh
 # Installation
 pip install -r requirements.txt
 
+#Compilation
+python -m grpc_tools.protoc -I=../schedule --python_out=. --grpc_python_out=. schedule.proto
+
 # Start app
-python user.py < -j | -m > [--storage ...]
+python schedule.py < -j | -m > [--storage ...]
 ```
 
 ## Docker
@@ -42,8 +41,8 @@ Lancer avec docker
 
 ```sh
 # Build image
-docker build . -t user-service
+docker build . -t schedule-service
 
 # Start container with either json or mongo as data storage
-docker run --name user-service -d user-service:latest < -j | -m > [--storage ...]
+docker run --name schedule-service -d schedule-service:latest < -j | -m > [--storage ...]
 ```

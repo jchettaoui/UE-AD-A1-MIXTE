@@ -1,17 +1,17 @@
-# User service
+# Booking service
 
 ## Service description
 
-Ce service permet de gérer les connexions des utlisateurs
+Ce service permet de gérer la liste des réservations
 
 - admin :  
-    - CRUD sur la liste des utilisateurs
-    - peut changer le statut de l'utlisateur (admin ou non)
+    - CRUD sur la liste des réservations
 - user : 
-    - CRUD uniquement sur ses propres données.
-    - accès à la lecture d'un utilisateur par id
-    - peut ajouter un utilisateur
-    - peut voir si un utilisateur est admin
+    - CRUD uniquement sur ses propres réservations
+
+## Appel à d'autres services 
+
+Ce service fait appel aux services user, movies et schedule.
 
 ## Requirements
 
@@ -26,24 +26,24 @@ Ce service permet de gérer les connexions des utlisateurs
 
 ## Standalone
 
-Lancer sans docker 
+Lancer sans docker
 
 ```sh
 # Installation
 pip install -r requirements.txt
 
 # Start app
-python user.py < -j | -m > [--storage ...]
+python booking.py < -j | -m > [--storage ...]
 ```
 
 ## Docker
 
-Lancer avec docker
+Lancer avec Docker
 
 ```sh
 # Build image
-docker build . -t user-service
+docker build . -t booking-service
 
 # Start container with either json or mongo as data storage
-docker run --name user-service -d user-service:latest < -j | -m > [--storage ...]
+docker run --name booking-service -d booking-service:latest < -j | -m > [--storage ...]
 ```
