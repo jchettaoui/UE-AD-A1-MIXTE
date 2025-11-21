@@ -37,15 +37,17 @@ class ActorDatabaseMongoConnector(ActorDatabaseConnector):
     def add_movie_to_actor(self, movie_id: str, actor_id: str) -> None:
         collection = self._db["actors"]
         actor = self.get_actor_by_id(actor_id)
+        
         #on ne veut pas de doublons
         if movie_id not in actor["films"]:
             actor["films"].append(movie_id)
+        
         collection.update_one({"id": actor_id}, {"$set": actor})
 
     def delete_actors_from_movie(self, movie_id: str) -> None:
         collection = self._db["actors"]
         acteurs = collection.find({"films": movie_id})
-        
+
         for acteur in acteurs: 
             acteur["films"].remove(movie_id)
             collection.update_one({"id": acteur["id"]}, {"$set": acteur})

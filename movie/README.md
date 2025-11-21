@@ -1,17 +1,13 @@
-# User service
+# Movie service
 
 ## Service description
 
-Ce service permet de gérer les connexions des utlisateurs
+Ce service permet de gérer la liste des films ainsi que ses acteurs associés
 
 - admin :  
-    - CRUD sur la liste des utilisateurs
-    - peut changer le statut de l'utlisateur (admin ou non)
+    - CRUD sur la liste des films
 - user : 
-    - CRUD uniquement sur ses propres données.
-    - accès à la lecture d'un utilisateur par id
-    - peut ajouter un utilisateur
-    - peut voir si un utilisateur est admin
+    - uniquement de la lecture sur la liste des programmations
 
 ## Requirements
 
@@ -26,24 +22,24 @@ Ce service permet de gérer les connexions des utlisateurs
 
 ## Standalone
 
-Lancer sans docker 
+Lancer sans docker
 
 ```sh
 # Installation
 pip install -r requirements.txt
 
 # Start app
-python user.py < -j | -m > [--storage ...]
+python movie.py < -j | -m > [--storage_movies ...] [--storage_actors ...]
 ```
 
 ## Docker
 
-Lancer avec docker
+Lancer avec Docker
 
 ```sh
 # Build image
-docker build . -t user-service
+docker build . -t movie-service
 
 # Start container with either json or mongo as data storage
-docker run --name user-service -d user-service:latest < -j | -m > [--storage ...]
+docker run --name movie-service -d movie-service:latest < -j | -m > [--storage_movies ...] [--storage_actors ...]
 ```

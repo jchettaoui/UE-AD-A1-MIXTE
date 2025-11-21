@@ -11,7 +11,7 @@ class UserDatabaseMongoConnector(UserDatabaseConnector):
         self._db_url = db_url
         self._client = MongoClient(self._db_url)
         self._db = self._client["user"]
-        print(f"Initialized User Database Json Connector with file_path: {db_url}")
+        print(f"Initialized User Database Json Connector with url: {db_url}")
         self._init_superuser()
         
     def get_users(self) -> List[dict]:
