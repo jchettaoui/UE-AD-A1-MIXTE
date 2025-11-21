@@ -1,7 +1,34 @@
 services:
+  booking:
+    build: ./booking/
+    command: "-j --user-service-url 'http://user:3203' --movie-service-url 'http://movie:3001' --schedule-service-url 'schedule:3002'"
+    depends_on:
+      - user
+      - movie
+      - schedule
+    hostname: booking
+    ports:
+      - "3003:3003"
   movie:
     build: ./movie/
+    command: "-j --user-service-url  'http://user:3203'"
+    depends_on:
+      - user
+    hostname: movie
     ports:
-      - "3200:3200"
-  # to continue
-
+      - "3001:3001"
+  schedule:
+    build: ./schedule/
+    command: "-j --user-service-url  'http://user:3203' --movie-service-url  'http://movie:3001'"
+    depends_on:
+      - user
+      - movie
+    hostname: schedule
+    ports:
+      - "3002:3002"
+  user:
+    build: ./user/
+    command: '-j'
+    hostname: user
+    ports:
+      - "3203:3203"

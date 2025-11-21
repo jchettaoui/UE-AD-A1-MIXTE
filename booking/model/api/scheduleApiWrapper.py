@@ -12,6 +12,6 @@ class ScheduleApiWrapper:
         with grpc.insecure_channel(self.api_url) as channel:
             stub = model.api.schedule_pb2_grpc.ScheduleStub(channel)
             schedule = model.api.schedule_pb2.Date(date=_date)
-            result, call = stub.get_schedule_bydate.with_call(schedule)
+            result, call = stub.route_get_schedule_bydate.with_call(schedule)
         channel.close()
         return result, call.code()

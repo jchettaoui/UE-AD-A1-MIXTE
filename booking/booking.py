@@ -21,9 +21,13 @@ PORT = 3003
 HOST = '0.0.0.0'
 
 # External services
-MOVIE_API = "http://localhost:3001"
-SCHEDULE_API = "localhost:3002"
-USER_API = "http://localhost:3203"
+DEFAULT_MOVIE_API_URL = "http://localhost:3200"
+DEFAULT_SCHEDULE_API_URL = "http://localhost:3202"
+DEFAULT_USER_API_URL = "http://localhost:3203"
+
+movie_api_url = None
+schedule_api_url = None
+user_api_url = None
 
 ########################################################################################
 #                                                                                      #
@@ -49,10 +53,11 @@ def parse_args() -> None:
    parser.add_argument("-m", "--mongo", help="Choose mongodb as data storage", action="store_true")
    parser.add_argument("-j", "--json", help="Choose JSON file as data storage", action="store_true")
    parser.add_argument("--storage", help="Specify where the data is stored (either a json file or a mongo url)")
+   parser.add_argument("--user-service-url", help="Specify the url of the user service", default=DEFAULT_USER_API_URL)
+   parser.add_argument("--movie-service-url", help="Specify the url of the movie service", default=DEFAULT_MOVIE_API_URL)
+   parser.add_argument("--schedule-service-url", help="Specify the url of the schedule service", default=DEFAULT_SCHEDULE_API_URL)
 
    args = parser.parse_args()
-
-   args.mongo = True
 
    if not args.mongo and not args.json:
       print("Please select a data storage method when starting the app : \n\tJSON : -j \n\tMongoDB : -m\nYou can also specify the storage destination with the flag '--storage'")
@@ -75,7 +80,7 @@ def parse_args() -> None:
    else:
       destination = args.storage
 
-   global database
+   global database, user_api_url, movie_api_url, schedule_api_url
 
    if args.mongo:
       database = BookingDatabaseConnectorMongo(destination)
@@ -83,11 +88,15 @@ def parse_args() -> None:
       # Json by default
       database = BookingDatabaseConnectorJson(destination)
 
+   user_api_url = args.user_service_url
+   movie_api_url = args.movie_service_url
+   schedule_api_url = args.schedule_service_url
+
 
 def init_graphql() -> None:
     global schema, r
 
-    r = BookingResolvers(database, MOVIE_API, SCHEDULE_API, USER_API)
+    r = BookingResolvers(database, movie_api_url, schedule_api_url, user_api_url)
 
     type_defs = load_schema_from_path('booking.graphql')
 

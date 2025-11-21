@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 ADD . /app/
 
 # start movie.py when the container is started
-CMD ["python", "-u", "user.py"]
+ENTRYPOINT ["python", "-u", "user.py"]

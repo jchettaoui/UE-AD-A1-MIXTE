@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eschedule.proto\"\x07\n\x05\x45mpty\"\x14\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"&\n\tDatesList\x12\x19\n\ndates_list\x18\x01 \x03(\x0b\x32\x05.Date\"\x1b\n\x07MovieId\x12\x10\n\x08movie_id\x18\x01 \x01(\t\"/\n\x0cScheduleData\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x11\n\tmovies_id\x18\x02 \x03(\t\"2\n\x0b\x41llSchedule\x12#\n\x0c\x61ll_schedule\x18\x01 \x03(\x0b\x32\r.ScheduleData\"0\n\x0eScheduledMovie\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x10\n\x08movie_id\x18\x02 \x01(\t\"!\n\nMoviesList\x12\x13\n\x0bmovies_list\x18\x01 \x03(\t2\xe9\x02\n\x08Schedule\x12*\n\x10get_all_schedule\x12\x06.Empty\x1a\x0c.AllSchedule\"\x00\x12-\n\x13get_schedule_bydate\x12\x05.Date\x1a\r.ScheduleData\"\x00\x12-\n\x13get_dates_bymovieid\x12\x08.MovieId\x1a\n.DatesList\"\x00\x12\x32\n\x0eschedule_movie\x12\x0f.ScheduledMovie\x1a\r.ScheduleData\"\x00\x12\x36\n\x10unschedule_movie\x12\x0f.ScheduledMovie\x1a\x0f.ScheduledMovie\"\x00\x12\x34\n\x1a\x64\x65lete_movie_from_schedule\x12\x08.MovieId\x1a\n.DatesList\"\x00\x12\x31\n\x19\x64\x65lete_date_from_schedule\x12\x05.Date\x1a\x0b.MoviesList\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eschedule.proto\"\x07\n\x05\x45mpty\"\x14\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"&\n\tDatesList\x12\x19\n\ndates_list\x18\x01 \x03(\x0b\x32\x05.Date\"\x1b\n\x07MovieId\x12\x10\n\x08movie_id\x18\x01 \x01(\t\"/\n\x0cScheduleData\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x11\n\tmovies_id\x18\x02 \x03(\t\"2\n\x0b\x41llSchedule\x12#\n\x0c\x61ll_schedule\x18\x01 \x03(\x0b\x32\r.ScheduleData\"0\n\x0eScheduledMovie\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x10\n\x08movie_id\x18\x02 \x01(\t\"!\n\nMoviesList\x12\x13\n\x0bmovies_list\x18\x01 \x03(\t2\x93\x03\n\x08Schedule\x12\x30\n\x16route_get_all_schedule\x12\x06.Empty\x1a\x0c.AllSchedule\"\x00\x12\x33\n\x19route_get_schedule_bydate\x12\x05.Date\x1a\r.ScheduleData\"\x00\x12\x33\n\x19route_get_dates_bymovieid\x12\x08.MovieId\x1a\n.DatesList\"\x00\x12\x38\n\x14route_schedule_movie\x12\x0f.ScheduledMovie\x1a\r.ScheduleData\"\x00\x12<\n\x16route_unschedule_movie\x12\x0f.ScheduledMovie\x1a\x0f.ScheduledMovie\"\x00\x12:\n route_delete_movie_from_schedule\x12\x08.MovieId\x1a\n.DatesList\"\x00\x12\x37\n\x1froute_delete_date_from_schedule\x12\x05.Date\x1a\x0b.MoviesList\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -48,5 +48,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MOVIESLIST']._serialized_start=269
   _globals['_MOVIESLIST']._serialized_end=302
   _globals['_SCHEDULE']._serialized_start=305
-  _globals['_SCHEDULE']._serialized_end=666
+  _globals['_SCHEDULE']._serialized_end=708
 # @@protoc_insertion_point(module_scope)

@@ -4,7 +4,8 @@ import requests
 from concurrent import futures
 from flask import request as f_request
 
-from model import ScheduleDatabaseMongoConnector, ScheduleDatabaseConnector, ScheduleDatabaseJsonConnector
+from model.api import MovieApiWrapper, UserApiWrapper
+from model.db import ScheduleDatabaseMongoConnector, ScheduleDatabaseConnector, ScheduleDatabaseJsonConnector
 
 import schedule_pb2
 import schedule_pb2_grpc
@@ -20,7 +21,8 @@ DEFAULT_JSON_DESTINATION = "./data/times.json"
 DEFAULT_MONGO_DESTINATION = "mongodb://root:example@localhost:27017/"
 
 # External services
-USER_API = "http://localhost:3203"
+DEFAULT_MOVIE_API_URL = "http://localhost:3001"
+DEFAULT_USER_API_URL = "http://localhost:3203"
 
 ########################################################################################
 #                                                                                      #
@@ -29,7 +31,8 @@ USER_API = "http://localhost:3203"
 ########################################################################################
 
 database : ScheduleDatabaseConnector = None
-REQUEST_URL = "http://localhost:3002"
+movie_api : MovieApiWrapper = None
+user_api : UserApiWrapper = None
 
 ########################################################################################
 #                                                                                      #
@@ -38,61 +41,56 @@ REQUEST_URL = "http://localhost:3002"
 ########################################################################################
 
 def parse_args() -> None:
-   """Parse command line arguments to choose data storage method and destination."""
+    """Parse command line arguments to choose data storage method and destination."""
 
-   parser = argparse.ArgumentParser()
-   parser.add_argument("-m", "--mongo", help="Choose mongodb as data storage", action="store_true")
-   parser.add_argument("-j", "--json", help="Choose JSON file as data storage", action="store_true")
-   parser.add_argument("--storage", help="Specify where the data is stored (either a json file or a mongo url)")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--mongo", help="Choose mongodb as data storage", action="store_true")
+    parser.add_argument("-j", "--json", help="Choose JSON file as data storage", action="store_true")
+    parser.add_argument("--storage", help="Specify where the data is stored (either a json file or a mongo url)")
+    parser.add_argument("--user-service-url", help="Specify the url of the user service", default=DEFAULT_USER_API_URL)
+    parser.add_argument("--movie-service-url", help="Specify the url of the movie service", default=DEFAULT_MOVIE_API_URL)
 
-   args = parser.parse_args()
+    args = parser.parse_args()
 
-   if not args.mongo and not args.json:
-      print("Please select a data storage method when starting the app : \n\tJSON : -j \n\tMongoDB : -m\nYou can also specify the storage destination with the flag '--storage'")
-      exit(1)
+    if not args.mongo and not args.json:
+        print("Please select a data storage method when starting the app : \n\tJSON : -j \n\tMongoDB : -m\nYou can also specify the storage destination with the flag '--storage'")
+        exit(1)
 
-   if args.mongo and args.json:
-      print("You can only choose one data storage method !")
-      exit(1)
+    if args.mongo and args.json:
+        print("You can only choose one data storage method !")
+        exit(1)
 
-   destination = ""
-   if not args.storage:
-      print("No storage destination found. Using default value :", end="")
-      if args.mongo:
-         print(DEFAULT_MONGO_DESTINATION)
-         destination = DEFAULT_MONGO_DESTINATION
-      else:
-         # Json by default
-         print(DEFAULT_JSON_DESTINATION)
-         destination = DEFAULT_JSON_DESTINATION
-   else:
-      destination = args.storage
+    destination = ""
+    if not args.storage:
+        print("No storage destination found. Using default value :", end="")
+        if args.mongo:
+            print(DEFAULT_MONGO_DESTINATION)
+            destination = DEFAULT_MONGO_DESTINATION
+        else:
+            # Json by default
+            print(DEFAULT_JSON_DESTINATION)
+            destination = DEFAULT_JSON_DESTINATION
+    else:
+        destination = args.storage
 
-   global database
+    global database, user_api
 
-   if args.mongo:
-      database = ScheduleDatabaseMongoConnector(destination)
-   else:
-      # Json by default
-      database = ScheduleDatabaseJsonConnector(destination)
+    if args.mongo:
+        database = ScheduleDatabaseMongoConnector(destination)
+    else:
+        # Json by default
+        database = ScheduleDatabaseJsonConnector(destination)
+
+    user_api = UserApiWrapper(args.user_service_url)
+    movie_api = MovieApiWrapper(args.movie_service_url)
+
 
 def is_user_an_administrator(context) -> bool:
     metadata = dict(context.invocation_metadata())
-
-    userid = metadata.get("Authorization")
-    print(userid)
-
+    userid = metadata.get("authorization")
     if userid is None:
         return False
-
-    userid = userid.strip('"')
-    
-    
-    result = requests.get(f"{USER_API}/users/{userid}/admin")
-    if result.status_code != 200:
-        return False
-    
-    return result.json()["admin"]
+    return user_api.is_user_an_administrator(userid)
 
 
 ########################################################################################
