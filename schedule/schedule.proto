@@ -1,13 +1,13 @@
 syntax = "proto3";
 
 service Schedule {
-    rpc get_all_schedule(Empty) returns (AllSchedule) {}
-    rpc get_schedule_bydate(Date) returns (ScheduleData) {}
-    rpc get_dates_bymovieid(MovieId) returns (DatesList) {}
-    rpc schedule_movie(ScheduledMovie) returns (ScheduleData) {}
-    rpc unschedule_movie(ScheduledMovie) returns (ScheduledMovie) {}
-    rpc delete_movie_from_schedule(MovieId) returns (DatesList) {}
-    rpc delete_date_from_schedule(Date) returns (MoviesList) {}
+    rpc route_get_all_schedule(Empty) returns (AllSchedule) {}
+    rpc route_get_schedule_bydate(Date) returns (ScheduleData) {}
+    rpc route_get_dates_bymovieid(MovieId) returns (DatesList) {}
+    rpc route_schedule_movie(ScheduledMovie) returns (ScheduleData) {}
+    rpc route_unschedule_movie(ScheduledMovie) returns (ScheduledMovie) {}
+    rpc route_delete_movie_from_schedule(MovieId) returns (DatesList) {}
+    rpc route_delete_date_from_schedule(Date) returns (MoviesList) {}
 }
 
 message Empty{
