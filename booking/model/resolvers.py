@@ -1,7 +1,5 @@
-import json
-import requests
-import grpc
 from flask import request as f_request
+from grpc import StatusCode as grpcStatusCode
 
 from .db import BookingDatabaseConnector
 from .api import MovieApiWrapper, ScheduleApiWrapper, UserApiWrapper
@@ -63,7 +61,7 @@ class BookingResolvers:
 
         # check if schedule exist
         screening, request_code = self._schedule_api.get_schedule_by_date(_date)
-        if request_code != grpc.StatusCode.OK or screening.date == "":
+        if request_code != grpcStatusCode.OK or screening.date == "":
             return
         
         # add booking to user

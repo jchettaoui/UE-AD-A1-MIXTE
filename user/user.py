@@ -60,7 +60,7 @@ def parse_args() -> None:
          print(DEFAULT_JSON_DESTINATION)
          destination = DEFAULT_JSON_DESTINATION
    else:
-      destination = parser.storage
+      destination = args.storage
 
    global database
 
